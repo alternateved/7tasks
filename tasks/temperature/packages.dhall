@@ -103,3 +103,19 @@ let upstream =
         sha256:f8905bf5d7ce9d886cf4ef1c5893ab55de0b30c82c2b4137f272d075000fbc50
 
 in  upstream
+  with specular =
+    { dependencies =
+      [ "prelude"
+      , "aff"
+      , "typelevel-prelude"
+      , "record"
+      , "unsafe-reference"
+      , "random"
+      , "debug"
+      , "foreign-object"
+      , "contravariant"
+      , "avar"
+      ]
+    , repo = "https://github.com/restaumatic/purescript-specular.git"
+    , version = "master"
+    }
