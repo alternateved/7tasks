@@ -1,4 +1,4 @@
-module Main where
+module Tasks.Temperature where
 
 import Prelude
 
@@ -20,8 +20,8 @@ celsiusToFahrenheit (Celsius c) = Fahrenheit $ c * (9.0 / 5.0) + 32.0
 fahrenheitToCelsius :: Fahrenheit -> Celsius
 fahrenheitToCelsius (Fahrenheit f) = Celsius $ (f - 32.0) * (5.0 / 9.0)
 
-main :: Effect Unit
-main = do
+component :: Effect Unit
+component = do
   runMainWidgetInBody do
 
     celsius :: Ref String <- Ref.new "0.0"

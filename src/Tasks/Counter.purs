@@ -1,4 +1,4 @@
-module Main where
+module Tasks.Counter where
 
 import Prelude
 
@@ -26,8 +26,8 @@ modifyCounters cs i f = Ref.modify cs f'
 readCounters :: Counters -> Int -> Dynamic Int
 readCounters cs i = fromMaybe 0 <<< (_ !! i) <$> Ref.value cs
 
-main :: Effect Unit
-main = do
+component :: Effect Unit
+component = do
   -- | Will append widget to the body
   runMainWidgetInBody do
 
