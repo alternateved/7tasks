@@ -1,5 +1,5 @@
 {
-  description = "Specular starter";
+  description = "7tasks";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs";
@@ -20,14 +20,11 @@
       {
         devShell = pkgs.mkShell {
           buildInputs = with pkgs; [
-            psa
             purescript-language-server
             purs
             purs-tidy
             spago
-            pscid
             nodejs
-            nodePackages.parcel-bundler
           ];
         };
       });

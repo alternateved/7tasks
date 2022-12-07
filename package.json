@@ -1,0 +1,10 @@
+{
+  "name": "7tasks",
+  "description": "Implementation of 7GUIs tasks in PureScript",
+  "dependencies": {
+    "esbuild": "^0.16.1",
+    "purescript-language-server": "^0.17.1",
+    "purs-tidy": "^0.9.2",
+    "spago": "^0.20.9"
+  }
+}
