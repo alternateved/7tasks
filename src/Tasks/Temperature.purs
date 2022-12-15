@@ -21,12 +21,9 @@ fahrenheitToCelsius (Fahrenheit f) = Celsius $ (f - 32.0) * (5.0 / 9.0)
 
 component :: Widget Unit
 component = do
-    celsius :: Ref String <- Ref.new "0.0"
-    fahrenheit :: Ref String <- Ref.new "32.0"
-
-    el_ "div" do
-      el_ "strong" $ text "Temperature Converter"
-
+  celsius :: Ref String <- Ref.new "0.0"
+  fahrenheit :: Ref String <- Ref.new "32.0"
+  el_ "div" do
     el_ "div" do
       -- | Create an input box for Celsius
       el "input"

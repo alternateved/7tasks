@@ -15,10 +15,8 @@ to generate this file without the comments in this block.
   [ "arrays"
   , "console"
   , "effect"
-  , "foldable-traversable"
   , "maybe"
   , "prelude"
-  , "routing"
   , "specular"
   ]
 , packages = ./packages.dhall
