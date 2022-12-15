@@ -2,9 +2,8 @@ module Tasks.Temperature where
 
 import Prelude
 
-import Effect (Effect)
 import Specular.Dom.Element (attr, bindValueOnChange, el, el_, text)
-import Specular.Dom.Widget (emptyWidget, runMainWidgetInBody)
+import Specular.Dom.Widget (Widget, emptyWidget)
 import Specular.Ref (Ref)
 import Specular.Ref as Ref
 
@@ -20,10 +19,8 @@ celsiusToFahrenheit (Celsius c) = Fahrenheit $ c * (9.0 / 5.0) + 32.0
 fahrenheitToCelsius :: Fahrenheit -> Celsius
 fahrenheitToCelsius (Fahrenheit f) = Celsius $ (f - 32.0) * (5.0 / 9.0)
 
-component :: Effect Unit
+component :: Widget Unit
 component = do
-  runMainWidgetInBody do
-
     celsius :: Ref String <- Ref.new "0.0"
     fahrenheit :: Ref String <- Ref.new "32.0"
 

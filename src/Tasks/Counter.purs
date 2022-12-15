@@ -7,7 +7,7 @@ import Data.Maybe (fromMaybe)
 import Effect (Effect)
 import Effect.Class (class MonadEffect)
 import Specular.Dom.Element (attr, class_, dynText, el, el_, onClick_, text)
-import Specular.Dom.Widget (runMainWidgetInBody)
+import Specular.Dom.Widget (Widget, runMainWidgetInBody)
 import Specular.FRP (Dynamic)
 import Specular.Ref (Ref)
 import Specular.Ref as Ref
@@ -26,11 +26,8 @@ modifyCounters cs i f = Ref.modify cs f'
 readCounters :: Counters -> Int -> Dynamic Int
 readCounters cs i = fromMaybe 0 <<< (_ !! i) <$> Ref.value cs
 
-component :: Effect Unit
+component :: Widget Unit
 component = do
-  -- | Will append widget to the body
-  runMainWidgetInBody do
-
     -- | Generate list of counters
     counters <- mkCounters $ replicate 3 0
 
