@@ -2,7 +2,7 @@ module Tasks.Booker where
 
 import Prelude
 
-import Specular.Dom.Element (attr, el, el_, text)
+import Specular.Dom.Element (attr, el, el_)
 import Specular.Dom.Widget (Widget, emptyWidget)
 
 component :: Widget Unit
