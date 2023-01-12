@@ -39,30 +39,30 @@ component = do
 
   -- 1
   el_ "div" do
-    el "button" [ class_ "btn", attr "type" "button", onClick_ (addCb 0) ] do
-      text "+"
-
-    dynText $ show <$> readCounters counters 0
-
     el "button" [ class_ "btn", attr "type" "button", onClick_ (subtractCb 0) ] do
       text "-"
 
-  -- 2
-  el_ "div" do
-    el "button" [ class_ "btn", attr "type" "button", onClick_ (addCb 1) ] do
+    dynText $ show <$> readCounters counters 0
+
+    el "button" [ class_ "btn", attr "type" "button", onClick_ (addCb 0) ] do
       text "+"
 
-    dynText $ show <$> readCounters counters 1
-
+  -- 2
+  el_ "div" do
     el "button" [ class_ "btn", attr "type" "button", onClick_ (subtractCb 1) ] do
       text "-"
 
+    dynText $ show <$> readCounters counters 1
+
+    el "button" [ class_ "btn", attr "type" "button", onClick_ (addCb 1) ] do
+      text "+"
+
   -- 3
   el_ "div" do
-    el "button" [ class_ "btn", attr "type" "button", onClick_ (addCb 2) ] do
-      text "+"
+    el "button" [ class_ "btn", attr "type" "button", onClick_ (subtractCb 2) ] do
+      text "-"
 
     dynText $ show <$> readCounters counters 2
 
-    el "button" [ class_ "btn", attr "type" "button", onClick_ (subtractCb 2) ] do
-      text "-"
+    el "button" [ class_ "btn", attr "type" "button", onClick_ (addCb 2) ] do
+      text "+"

@@ -2479,19 +2479,19 @@
     var addCb = function(i) {
       return modifyCounters(counters)(i)(add3(1));
     };
-    return discard6(el_("div")(discard6(el("button")([class_("btn"), attr("type")("button"), onClick_(addCb(0))])(text2("+")))(function() {
+    return discard6(el_("div")(discard6(el("button")([class_("btn"), attr("type")("button"), onClick_(subtractCb(0))])(text2("-")))(function() {
       return discard6(dynText(map4(show2)(readCounters(counters)(0))))(function() {
-        return el("button")([class_("btn"), attr("type")("button"), onClick_(subtractCb(0))])(text2("-"));
+        return el("button")([class_("btn"), attr("type")("button"), onClick_(addCb(0))])(text2("+"));
       });
     })))(function() {
-      return discard6(el_("div")(discard6(el("button")([class_("btn"), attr("type")("button"), onClick_(addCb(1))])(text2("+")))(function() {
+      return discard6(el_("div")(discard6(el("button")([class_("btn"), attr("type")("button"), onClick_(subtractCb(1))])(text2("-")))(function() {
         return discard6(dynText(map4(show2)(readCounters(counters)(1))))(function() {
-          return el("button")([class_("btn"), attr("type")("button"), onClick_(subtractCb(1))])(text2("-"));
+          return el("button")([class_("btn"), attr("type")("button"), onClick_(addCb(1))])(text2("+"));
         });
       })))(function() {
-        return el_("div")(discard6(el("button")([class_("btn"), attr("type")("button"), onClick_(addCb(2))])(text2("+")))(function() {
+        return el_("div")(discard6(el("button")([class_("btn"), attr("type")("button"), onClick_(subtractCb(2))])(text2("-")))(function() {
           return discard6(dynText(map4(show2)(readCounters(counters)(2))))(function() {
-            return el("button")([class_("btn"), attr("type")("button"), onClick_(subtractCb(2))])(text2("-"));
+            return el("button")([class_("btn"), attr("type")("button"), onClick_(addCb(2))])(text2("+"));
           });
         }));
       });
