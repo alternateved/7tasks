@@ -1,4 +1,4 @@
-{ name = "7guis"
+{ name = "7tasks"
 , dependencies =
   [ "arrays"
   , "console"
