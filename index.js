@@ -67,20 +67,20 @@
   };
   var applySecond = function(dictApply) {
     var apply1 = apply(dictApply);
-    var map5 = map(dictApply.Functor0());
+    var map7 = map(dictApply.Functor0());
     return function(a) {
       return function(b) {
-        return apply1(map5($$const(identity2))(a))(b);
+        return apply1(map7($$const(identity2))(a))(b);
       };
     };
   };
   var lift2 = function(dictApply) {
     var apply1 = apply(dictApply);
-    var map5 = map(dictApply.Functor0());
+    var map7 = map(dictApply.Functor0());
     return function(f) {
       return function(a) {
         return function(b) {
-          return apply1(map5(f)(a))(b);
+          return apply1(map7(f)(a))(b);
         };
       };
     };
@@ -293,12 +293,24 @@
     };
   };
 
+  // output/Data.Functor.Invariant/index.js
+  var imap = function(dict) {
+    return dict.imap;
+  };
+
   // output/Data.Show/foreign.js
   var showIntImpl = function(n) {
     return n.toString();
   };
+  var showNumberImpl = function(n) {
+    var str = n.toString();
+    return isNaN(str + ".0") ? str : str + ".0";
+  };
 
   // output/Data.Show/index.js
+  var showNumber = {
+    show: showNumberImpl
+  };
   var showInt = {
     show: showIntImpl
   };
@@ -371,6 +383,17 @@
         throw new Error("Failed pattern match at Data.Maybe (line 237, column 1 - line 237, column 51): " + [v.constructor.name, v1.constructor.name, v2.constructor.name]);
       };
     };
+  };
+  var functorMaybe = {
+    map: function(v) {
+      return function(v1) {
+        if (v1 instanceof Just) {
+          return new Just(v(v1.value0));
+        }
+        ;
+        return Nothing.value;
+      };
+    }
   };
   var fromMaybe = function(a) {
     return maybe(a)(identity4);
@@ -551,12 +574,12 @@
 
   // output/Control.Monad/index.js
   var ap = function(dictMonad) {
-    var bind4 = bind(dictMonad.Bind1());
+    var bind3 = bind(dictMonad.Bind1());
     var pure3 = pure(dictMonad.Applicative0());
     return function(f) {
       return function(a) {
-        return bind4(f)(function(f$prime) {
-          return bind4(a)(function(a$prime) {
+        return bind3(f)(function(f$prime) {
+          return bind3(a)(function(a$prime) {
             return pure3(f$prime(a$prime));
           });
         });
@@ -1013,7 +1036,7 @@
       };
     }
     return function(apply3) {
-      return function(map5) {
+      return function(map7) {
         return function(pure3) {
           return function(f) {
             return function(array) {
@@ -1022,14 +1045,14 @@
                   case 0:
                     return pure3([]);
                   case 1:
-                    return map5(array1)(f(array[bot]));
+                    return map7(array1)(f(array[bot]));
                   case 2:
-                    return apply3(map5(array2)(f(array[bot])))(f(array[bot + 1]));
+                    return apply3(map7(array2)(f(array[bot])))(f(array[bot + 1]));
                   case 3:
-                    return apply3(apply3(map5(array3)(f(array[bot])))(f(array[bot + 1])))(f(array[bot + 2]));
+                    return apply3(apply3(map7(array3)(f(array[bot])))(f(array[bot + 1])))(f(array[bot + 2]));
                   default:
                     var pivot = bot + Math.floor((top2 - bot) / 4) * 2;
-                    return apply3(map5(concat2)(go(bot, pivot)))(go(pivot, top2));
+                    return apply3(map7(concat2)(go(bot, pivot)))(go(pivot, top2));
                 }
               }
               return go(0, array.length);
@@ -2010,17 +2033,17 @@
   var measure = function(dictMonadEffect) {
     var Monad0 = dictMonadEffect.Monad0();
     var Bind1 = Monad0.Bind1();
-    var bind4 = bind(Bind1);
+    var bind3 = bind(Bind1);
     var liftEffect5 = liftEffect(dictMonadEffect);
     var discard12 = discard3(Bind1);
     var pure12 = pure(Monad0.Applicative0());
     if (enabled) {
       return function(name3) {
         return function(action) {
-          return bind4(liftEffect5(function() {
+          return bind3(liftEffect5(function() {
             return begin(name3);
           }))(function(mark) {
-            return bind4(action)(function(result) {
+            return bind3(action)(function(result) {
               return discard12(liftEffect5(function() {
                 return end(mark);
               }))(function() {
@@ -2203,11 +2226,11 @@
   var withDynamic_ = function(dictMonadReplace) {
     var newSlot3 = newSlot(dictMonadReplace);
     return function(dictMonadFRP) {
-      var bind4 = bind(dictMonadFRP.MonadCleanup1().Monad0().Bind1());
+      var bind3 = bind(dictMonadFRP.MonadCleanup1().Monad0().Bind1());
       var subscribeDyn_3 = subscribeDyn_(dictMonadFRP);
       return function(dyn) {
         return function(widget) {
-          return bind4(newSlot3)(function(slot) {
+          return bind3(newSlot3)(function(slot) {
             return subscribeDyn_3(function(x) {
               return replaceSlot(slot)(widget(x));
             })(dyn);
@@ -2387,6 +2410,7 @@
   var emptyWidget = /* @__PURE__ */ pure(applicativeBuilder)(unit);
 
   // output/Specular.Ref/index.js
+  var map4 = /* @__PURE__ */ map(functorDynamic);
   var Ref = /* @__PURE__ */ function() {
     function Ref2(value0, value1) {
       this.value0 = value0;
@@ -2435,6 +2459,21 @@
       };
     };
   };
+  var invariantRef = {
+    imap: function(f) {
+      return function(g) {
+        return function(v) {
+          return new Ref(map4(f)(v.value0), function($115) {
+            return v.value1(function(h) {
+              return function($116) {
+                return g(h(f($116)));
+              };
+            }($115));
+          });
+        };
+      };
+    }
+  };
 
   // output/Tasks.Booker/index.js
   var component = /* @__PURE__ */ el_("div")(/* @__PURE__ */ discard(discardUnit)(bindBuilder)(/* @__PURE__ */ el_("div")(/* @__PURE__ */ el("input")([/* @__PURE__ */ attr("type")("text")])(emptyWidget)))(function() {
@@ -2442,14 +2481,14 @@
   }));
 
   // output/Tasks.Counter/index.js
-  var map4 = /* @__PURE__ */ map(functorDynamic);
+  var map5 = /* @__PURE__ */ map(functorDynamic);
   var modify5 = /* @__PURE__ */ modify4(monadEffectEffect);
   var add3 = /* @__PURE__ */ add(semiringInt);
   var discard6 = /* @__PURE__ */ discard(discardUnit)(bindBuilder);
   var show2 = /* @__PURE__ */ show(showInt);
   var readCounters = function(cs) {
     return function(i) {
-      return map4(function() {
+      return map5(function() {
         var $13 = fromMaybe(0);
         return function($14) {
           return $13(function(v) {
@@ -2480,17 +2519,17 @@
       return modifyCounters(counters)(i)(add3(1));
     };
     return discard6(el_("div")(discard6(el("button")([class_("btn"), attr("type")("button"), onClick_(subtractCb(0))])(text2("-")))(function() {
-      return discard6(dynText(map4(show2)(readCounters(counters)(0))))(function() {
+      return discard6(dynText(map5(show2)(readCounters(counters)(0))))(function() {
         return el("button")([class_("btn"), attr("type")("button"), onClick_(addCb(0))])(text2("+"));
       });
     })))(function() {
       return discard6(el_("div")(discard6(el("button")([class_("btn"), attr("type")("button"), onClick_(subtractCb(1))])(text2("-")))(function() {
-        return discard6(dynText(map4(show2)(readCounters(counters)(1))))(function() {
+        return discard6(dynText(map5(show2)(readCounters(counters)(1))))(function() {
           return el("button")([class_("btn"), attr("type")("button"), onClick_(addCb(1))])(text2("+"));
         });
       })))(function() {
         return el_("div")(discard6(el("button")([class_("btn"), attr("type")("button"), onClick_(subtractCb(2))])(text2("-")))(function() {
-          return discard6(dynText(map4(show2)(readCounters(counters)(2))))(function() {
+          return discard6(dynText(map5(show2)(readCounters(counters)(2))))(function() {
             return el("button")([class_("btn"), attr("type")("button"), onClick_(addCb(2))])(text2("+"));
           });
         }));
@@ -2498,19 +2537,125 @@
     });
   });
 
+  // output/Data.Number/foreign.js
+  var isFiniteImpl = isFinite;
+  function fromStringImpl(str, isFinite2, just, nothing) {
+    var num = parseFloat(str);
+    if (isFinite2(num)) {
+      return just(num);
+    } else {
+      return nothing;
+    }
+  }
+
+  // output/Data.Number/index.js
+  var fromString = function(str) {
+    return fromStringImpl(str, isFiniteImpl, Just.create, Nothing.value);
+  };
+
   // output/Tasks.Temperature/index.js
-  var bind3 = /* @__PURE__ */ bind(bindBuilder);
-  var $$new3 = /* @__PURE__ */ $$new2(monadEffectBuilder);
+  var show3 = /* @__PURE__ */ show(showNumber);
+  var map6 = /* @__PURE__ */ map(functorMaybe);
+  var imap2 = /* @__PURE__ */ imap(invariantRef);
   var discard7 = /* @__PURE__ */ discard(discardUnit)(bindBuilder);
-  var component3 = /* @__PURE__ */ bind3(/* @__PURE__ */ $$new3("0.0"))(function(v) {
-    return bind3($$new3("32.0"))(function(v1) {
-      return el_("div")(discard7(el_("div")(discard7(el("input")([attr("type")("text"), bindValueOnChange(v)])(emptyWidget))(function() {
+  var Fahrenheit = function(x) {
+    return x;
+  };
+  var Celsius = function(x) {
+    return x;
+  };
+  var to$prime = function(dict) {
+    return dict["to'"];
+  };
+  var temperatureInput = function(bound) {
+    return el("input")([attr("type")("text"), bindValueOnChange(bound)]);
+  };
+  var parseFahrenheit = {
+    "to'": function(v) {
+      if (v instanceof Just) {
+        return show3(v.value0);
+      }
+      ;
+      if (v instanceof Nothing) {
+        return "";
+      }
+      ;
+      throw new Error("Failed pattern match at Tasks.Temperature (line 25, column 1 - line 28, column 46): " + [v.constructor.name]);
+    },
+    "from'": function(str) {
+      return map6(Fahrenheit)(fromString(str));
+    }
+  };
+  var to$prime1 = /* @__PURE__ */ to$prime(parseFahrenheit);
+  var parseCelsius = {
+    "to'": function(v) {
+      if (v instanceof Just) {
+        return show3(v.value0);
+      }
+      ;
+      if (v instanceof Nothing) {
+        return "";
+      }
+      ;
+      throw new Error("Failed pattern match at Tasks.Temperature (line 20, column 1 - line 23, column 43): " + [v.constructor.name]);
+    },
+    "from'": function(str) {
+      return map6(Celsius)(fromString(str));
+    }
+  };
+  var to$prime2 = /* @__PURE__ */ to$prime(parseCelsius);
+  var from$prime = function(dict) {
+    return dict["from'"];
+  };
+  var from$prime1 = /* @__PURE__ */ from$prime(parseCelsius);
+  var from$prime2 = /* @__PURE__ */ from$prime(parseFahrenheit);
+  var defaultWith = function(fallback) {
+    return function(v) {
+      if (v instanceof Just) {
+        return v.value0;
+      }
+      ;
+      if (v instanceof Nothing) {
+        return fallback;
+      }
+      ;
+      throw new Error("Failed pattern match at Tasks.Temperature (line 39, column 24 - line 41, column 22): " + [v.constructor.name]);
+    };
+  };
+  var celsiusFahrenheit = {
+    "to'": function(v) {
+      return v * (9 / 5) + 32;
+    },
+    "from'": function(v) {
+      return (v - 32) * (5 / 9);
+    }
+  };
+  var to$prime3 = /* @__PURE__ */ to$prime(celsiusFahrenheit);
+  var from$prime3 = /* @__PURE__ */ from$prime(celsiusFahrenheit);
+  var component3 = /* @__PURE__ */ bind(bindBuilder)(/* @__PURE__ */ $$new2(monadEffectBuilder)(0))(function(celsius) {
+    var fahrenheit = imap2(to$prime3)(from$prime3)(celsius);
+    return discard7(el_("div")(el_("strong")(text2("Temperature Converter"))))(function() {
+      return discard7(el_("div")(discard7(temperatureInput(imap2(function($33) {
+        return to$prime2(Just.create($33));
+      })(function() {
+        var $34 = defaultWith(0);
+        return function($35) {
+          return $34(from$prime1($35));
+        };
+      }())(celsius))(emptyWidget))(function() {
         return el_("span")(text2(" Celsius"));
       })))(function() {
-        return el_("div")(discard7(el("input")([attr("type")("text"), bindValueOnChange(v1)])(emptyWidget))(function() {
+        return el_("div")(discard7(temperatureInput(imap2(function($36) {
+          return to$prime1(Just.create($36));
+        })(function() {
+          var $37 = defaultWith(0);
+          return function($38) {
+            return $37(from$prime2($38));
+          };
+        }())(fahrenheit))(emptyWidget))(function() {
           return el_("span")(text2(" Fahrenheit"));
         }));
-      }));
+      });
     });
   });
 
@@ -2607,20 +2752,20 @@
       }
     })))))
   };
-  var show3 = /* @__PURE__ */ show(showPageState);
+  var show4 = /* @__PURE__ */ show(showPageState);
   var renderLinks = function(state2) {
     var changeState = function(newState) {
       return write5(state2)(newState);
     };
     var renderLink = function(newState) {
-      return el("a")([attr("href")("#"), onClick_(changeState(newState))])(text2(show3(newState)));
+      return el("a")([attr("href")("#"), onClick_(changeState(newState))])(text2(show4(newState)));
     };
     return el("div")([attr("style")("display: flex; justify-content: space-around;")])(for_2([Index.value, Counter.value, Temperature.value, Booker.value])(renderLink));
   };
   var renderComponent = function(s) {
     var render = function(state2) {
       return function(c) {
-        return discard8(el_("strong")(text2(show3(state2))))(function() {
+        return discard8(el_("strong")(text2(show4(state2))))(function() {
           return discard8(el_("div")(c))(function() {
             return el_("br")(emptyWidget);
           });
