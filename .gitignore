@@ -141,5 +141,10 @@ output
 
 # End of https://www.toptal.com/developers/gitignore/api/linux,macos,purescript,direnv,emacs,visualstudiocode
 
-# PureScript LSP
+### PureScript ###
+
+# LSP
 .psc-ide-port
+
+# purescript-docs-search
+generated-docs/
