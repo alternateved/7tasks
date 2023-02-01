@@ -2,9 +2,8 @@ module Tasks.Temperature where
 
 import Prelude
 
-import Effect (Effect)
 import Specular.Dom.Element (attr, bindValueOnChange, el, el_, text)
-import Specular.Dom.Widget (emptyWidget, runMainWidgetInBody)
+import Specular.Dom.Widget (Widget, emptyWidget)
 import Specular.Ref (Ref)
 import Specular.Ref as Ref
 
@@ -39,7 +38,7 @@ defaultWith fallback = case _ of
   Nothing -> fallback
 
 
-component :: Effect Unit
+component :: Widget Unit
 component = do
   runMainWidgetInBody do
     celsius <- Ref.new $ Celsius 0.0

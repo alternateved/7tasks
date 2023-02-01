@@ -43,6 +43,15 @@
   // output/Data.Unit/foreign.js
   var unit = void 0;
 
+  // output/Type.Proxy/index.js
+  var $$Proxy = /* @__PURE__ */ function() {
+    function $$Proxy2() {
+    }
+    ;
+    $$Proxy2.value = new $$Proxy2();
+    return $$Proxy2;
+  }();
+
   // output/Data.Functor/index.js
   var map = function(dict) {
     return dict.map;
@@ -114,127 +123,31 @@
     };
   };
 
-  // output/Data.Array/foreign.js
-  var replicateFill = function(count) {
-    return function(value2) {
-      if (count < 1) {
-        return [];
-      }
-      var result = new Array(count);
-      return result.fill(value2);
-    };
-  };
-  var replicatePolyfill = function(count) {
-    return function(value2) {
-      var result = [];
-      var n = 0;
-      for (var i = 0; i < count; i++) {
-        result[n++] = value2;
-      }
-      return result;
-    };
-  };
-  var replicate = typeof Array.prototype.fill === "function" ? replicateFill : replicatePolyfill;
-  var fromFoldableImpl = function() {
-    function Cons(head, tail) {
-      this.head = head;
-      this.tail = tail;
-    }
-    var emptyList = {};
-    function curryCons(head) {
-      return function(tail) {
-        return new Cons(head, tail);
-      };
-    }
-    function listToArray(list) {
-      var result = [];
-      var count = 0;
-      var xs = list;
-      while (xs !== emptyList) {
-        result[count++] = xs.head;
-        xs = xs.tail;
-      }
-      return result;
-    }
-    return function(foldr2) {
+  // output/Data.Foldable/foreign.js
+  var foldrArray = function(f) {
+    return function(init) {
       return function(xs) {
-        return listToArray(foldr2(curryCons)(emptyList)(xs));
-      };
-    };
-  }();
-  var indexImpl = function(just) {
-    return function(nothing) {
-      return function(xs) {
-        return function(i) {
-          return i < 0 || i >= xs.length ? nothing : just(xs[i]);
-        };
-      };
-    };
-  };
-  var _updateAt = function(just) {
-    return function(nothing) {
-      return function(i) {
-        return function(a) {
-          return function(l) {
-            if (i < 0 || i >= l.length)
-              return nothing;
-            var l1 = l.slice();
-            l1[i] = a;
-            return just(l1);
-          };
-        };
-      };
-    };
-  };
-  var sortByImpl = function() {
-    function mergeFromTo(compare2, fromOrdering, xs1, xs2, from2, to) {
-      var mid;
-      var i;
-      var j;
-      var k;
-      var x;
-      var y;
-      var c;
-      mid = from2 + (to - from2 >> 1);
-      if (mid - from2 > 1)
-        mergeFromTo(compare2, fromOrdering, xs2, xs1, from2, mid);
-      if (to - mid > 1)
-        mergeFromTo(compare2, fromOrdering, xs2, xs1, mid, to);
-      i = from2;
-      j = mid;
-      k = from2;
-      while (i < mid && j < to) {
-        x = xs2[i];
-        y = xs2[j];
-        c = fromOrdering(compare2(x)(y));
-        if (c > 0) {
-          xs1[k++] = y;
-          ++j;
-        } else {
-          xs1[k++] = x;
-          ++i;
+        var acc = init;
+        var len = xs.length;
+        for (var i = len - 1; i >= 0; i--) {
+          acc = f(xs[i])(acc);
         }
-      }
-      while (i < mid) {
-        xs1[k++] = xs2[i++];
-      }
-      while (j < to) {
-        xs1[k++] = xs2[j++];
-      }
-    }
-    return function(compare2) {
-      return function(fromOrdering) {
-        return function(xs) {
-          var out;
-          if (xs.length < 2)
-            return xs;
-          out = xs.slice(0);
-          mergeFromTo(compare2, fromOrdering, out, xs.slice(0), 0, xs.length);
-          return out;
-        };
+        return acc;
       };
     };
-  }();
+  };
+  var foldlArray = function(f) {
+    return function(init) {
+      return function(xs) {
+        var acc = init;
+        var len = xs.length;
+        for (var i = 0; i < len; i++) {
+          acc = f(acc)(xs[i]);
+        }
+        return acc;
+      };
+    };
+  };
 
   // output/Data.Semigroup/foreign.js
   var concatArray = function(xs) {
@@ -245,6 +158,11 @@
         return xs;
       return xs.concat(ys);
     };
+  };
+
+  // output/Data.Symbol/index.js
+  var reflectSymbol = function(dict) {
+    return dict.reflectSymbol;
   };
 
   // output/Data.Semigroup/index.js
@@ -260,21 +178,6 @@
   };
   var append = function(dict) {
     return dict.append;
-  };
-
-  // output/Control.Monad/index.js
-  var ap = function(dictMonad) {
-    var bind3 = bind(dictMonad.Bind1());
-    var pure3 = pure(dictMonad.Applicative0());
-    return function(f) {
-      return function(a) {
-        return bind3(f)(function(f$prime) {
-          return bind3(a)(function(a$prime) {
-            return pure3(f$prime(a$prime));
-          });
-        });
-      };
-    };
   };
 
   // output/Data.Bounded/foreign.js
@@ -403,6 +306,38 @@
     return dict.show;
   };
 
+  // output/Data.Generic.Rep/index.js
+  var Inl = /* @__PURE__ */ function() {
+    function Inl2(value0) {
+      this.value0 = value0;
+    }
+    ;
+    Inl2.create = function(value0) {
+      return new Inl2(value0);
+    };
+    return Inl2;
+  }();
+  var Inr = /* @__PURE__ */ function() {
+    function Inr2(value0) {
+      this.value0 = value0;
+    }
+    ;
+    Inr2.create = function(value0) {
+      return new Inr2(value0);
+    };
+    return Inr2;
+  }();
+  var NoArguments = /* @__PURE__ */ function() {
+    function NoArguments2() {
+    }
+    ;
+    NoArguments2.value = new NoArguments2();
+    return NoArguments2;
+  }();
+  var from = function(dict) {
+    return dict.from;
+  };
+
   // output/Data.Maybe/index.js
   var identity4 = /* @__PURE__ */ identity(categoryFn);
   var Nothing = /* @__PURE__ */ function() {
@@ -458,6 +393,139 @@
     return dict.mempty;
   };
 
+  // output/Data.Tuple/index.js
+  var Tuple = /* @__PURE__ */ function() {
+    function Tuple2(value0, value1) {
+      this.value0 = value0;
+      this.value1 = value1;
+    }
+    ;
+    Tuple2.create = function(value0) {
+      return function(value1) {
+        return new Tuple2(value0, value1);
+      };
+    };
+    return Tuple2;
+  }();
+  var fst = function(v) {
+    return v.value0;
+  };
+
+  // output/Unsafe.Coerce/foreign.js
+  var unsafeCoerce2 = function(x) {
+    return x;
+  };
+
+  // output/Data.Foldable/index.js
+  var foldr = function(dict) {
+    return dict.foldr;
+  };
+  var traverse_ = function(dictApplicative) {
+    var applySecond3 = applySecond(dictApplicative.Apply0());
+    var pure3 = pure(dictApplicative);
+    return function(dictFoldable) {
+      var foldr2 = foldr(dictFoldable);
+      return function(f) {
+        return foldr2(function($454) {
+          return applySecond3(f($454));
+        })(pure3(unit));
+      };
+    };
+  };
+  var for_ = function(dictApplicative) {
+    var traverse_1 = traverse_(dictApplicative);
+    return function(dictFoldable) {
+      return flip(traverse_1(dictFoldable));
+    };
+  };
+  var foldMapDefaultR = function(dictFoldable) {
+    var foldr2 = foldr(dictFoldable);
+    return function(dictMonoid) {
+      var append3 = append(dictMonoid.Semigroup0());
+      var mempty3 = mempty(dictMonoid);
+      return function(f) {
+        return foldr2(function(x) {
+          return function(acc) {
+            return append3(f(x))(acc);
+          };
+        })(mempty3);
+      };
+    };
+  };
+  var foldableArray = {
+    foldr: foldrArray,
+    foldl: foldlArray,
+    foldMap: function(dictMonoid) {
+      return foldMapDefaultR(foldableArray)(dictMonoid);
+    }
+  };
+
+  // output/Data.Show.Generic/foreign.js
+  var intercalate = function(separator) {
+    return function(xs) {
+      return xs.join(separator);
+    };
+  };
+
+  // output/Data.Show.Generic/index.js
+  var append2 = /* @__PURE__ */ append(semigroupArray);
+  var genericShowArgsNoArguments = {
+    genericShowArgs: function(v) {
+      return [];
+    }
+  };
+  var genericShowArgs = function(dict) {
+    return dict.genericShowArgs;
+  };
+  var genericShowConstructor = function(dictGenericShowArgs) {
+    var genericShowArgs1 = genericShowArgs(dictGenericShowArgs);
+    return function(dictIsSymbol) {
+      var reflectSymbol2 = reflectSymbol(dictIsSymbol);
+      return {
+        "genericShow'": function(v) {
+          var ctor = reflectSymbol2($$Proxy.value);
+          var v1 = genericShowArgs1(v);
+          if (v1.length === 0) {
+            return ctor;
+          }
+          ;
+          return "(" + (intercalate(" ")(append2([ctor])(v1)) + ")");
+        }
+      };
+    };
+  };
+  var genericShow$prime = function(dict) {
+    return dict["genericShow'"];
+  };
+  var genericShowSum = function(dictGenericShow) {
+    var genericShow$prime1 = genericShow$prime(dictGenericShow);
+    return function(dictGenericShow1) {
+      var genericShow$prime2 = genericShow$prime(dictGenericShow1);
+      return {
+        "genericShow'": function(v) {
+          if (v instanceof Inl) {
+            return genericShow$prime1(v.value0);
+          }
+          ;
+          if (v instanceof Inr) {
+            return genericShow$prime2(v.value0);
+          }
+          ;
+          throw new Error("Failed pattern match at Data.Show.Generic (line 26, column 1 - line 28, column 40): " + [v.constructor.name]);
+        }
+      };
+    };
+  };
+  var genericShow = function(dictGeneric) {
+    var from3 = from(dictGeneric);
+    return function(dictGenericShow) {
+      var genericShow$prime1 = genericShow$prime(dictGenericShow);
+      return function(x) {
+        return genericShow$prime1(from3(x));
+      };
+    };
+  };
+
   // output/Effect/foreign.js
   var pureE = function(a) {
     return function() {
@@ -477,6 +545,21 @@
         for (var i = 0, l = as.length; i < l; i++) {
           f(as[i])();
         }
+      };
+    };
+  };
+
+  // output/Control.Monad/index.js
+  var ap = function(dictMonad) {
+    var bind4 = bind(dictMonad.Bind1());
+    var pure3 = pure(dictMonad.Applicative0());
+    return function(f) {
+      return function(a) {
+        return bind4(f)(function(f$prime) {
+          return bind4(a)(function(a$prime) {
+            return pure3(f$prime(a$prime));
+          });
+        });
       };
     };
   };
@@ -547,6 +630,22 @@
     };
   };
 
+  // output/Effect.Class/index.js
+  var monadEffectEffect = {
+    liftEffect: /* @__PURE__ */ identity(categoryFn),
+    Monad0: function() {
+      return monadEffect;
+    }
+  };
+  var liftEffect = function(dict) {
+    return dict.liftEffect;
+  };
+
+  // output/Control.Monad.Reader.Class/index.js
+  var ask = function(dict) {
+    return dict.ask;
+  };
+
   // output/Effect.Ref/foreign.js
   var _new = function(val) {
     return function() {
@@ -593,6 +692,184 @@
       return $$void2(modify(f)(s));
     };
   };
+
+  // output/Specular.Internal.Effect/foreign.js
+  function emptyDelayed() {
+    return [];
+  }
+  function pushDelayed(effs) {
+    return function(eff) {
+      return function() {
+        effs.push(eff);
+      };
+    };
+  }
+  function unsafeFreezeDelayed(x) {
+    return function() {
+      return x;
+    };
+  }
+  function sequenceEffects(effects) {
+    return function sequenceEffects_eff() {
+      for (var i = 0; i < effects.length; i++) {
+        effects[i]();
+      }
+    };
+  }
+
+  // output/Control.Monad.Cleanup/index.js
+  var onCleanup = function(dict) {
+    return dict.onCleanup;
+  };
+
+  // output/Control.Monad.Replace/index.js
+  var Slot = /* @__PURE__ */ function() {
+    function Slot2(value0, value1, value2) {
+      this.value0 = value0;
+      this.value1 = value1;
+      this.value2 = value2;
+    }
+    ;
+    Slot2.create = function(value0) {
+      return function(value1) {
+        return function(value2) {
+          return new Slot2(value0, value1, value2);
+        };
+      };
+    };
+    return Slot2;
+  }();
+  var replaceSlot = function(v) {
+    return v.value0;
+  };
+  var newSlot = function(dict) {
+    return dict.newSlot;
+  };
+  var destroySlot = function(v) {
+    return v.value1;
+  };
+
+  // output/Data.Array/foreign.js
+  var replicateFill = function(count) {
+    return function(value2) {
+      if (count < 1) {
+        return [];
+      }
+      var result = new Array(count);
+      return result.fill(value2);
+    };
+  };
+  var replicatePolyfill = function(count) {
+    return function(value2) {
+      var result = [];
+      var n = 0;
+      for (var i = 0; i < count; i++) {
+        result[n++] = value2;
+      }
+      return result;
+    };
+  };
+  var replicate = typeof Array.prototype.fill === "function" ? replicateFill : replicatePolyfill;
+  var fromFoldableImpl = function() {
+    function Cons(head, tail) {
+      this.head = head;
+      this.tail = tail;
+    }
+    var emptyList = {};
+    function curryCons(head) {
+      return function(tail) {
+        return new Cons(head, tail);
+      };
+    }
+    function listToArray(list) {
+      var result = [];
+      var count = 0;
+      var xs = list;
+      while (xs !== emptyList) {
+        result[count++] = xs.head;
+        xs = xs.tail;
+      }
+      return result;
+    }
+    return function(foldr2) {
+      return function(xs) {
+        return listToArray(foldr2(curryCons)(emptyList)(xs));
+      };
+    };
+  }();
+  var indexImpl = function(just) {
+    return function(nothing) {
+      return function(xs) {
+        return function(i) {
+          return i < 0 || i >= xs.length ? nothing : just(xs[i]);
+        };
+      };
+    };
+  };
+  var _updateAt = function(just) {
+    return function(nothing) {
+      return function(i) {
+        return function(a) {
+          return function(l) {
+            if (i < 0 || i >= l.length)
+              return nothing;
+            var l1 = l.slice();
+            l1[i] = a;
+            return just(l1);
+          };
+        };
+      };
+    };
+  };
+  var sortByImpl = function() {
+    function mergeFromTo(compare2, fromOrdering, xs1, xs2, from3, to) {
+      var mid;
+      var i;
+      var j;
+      var k;
+      var x;
+      var y;
+      var c;
+      mid = from3 + (to - from3 >> 1);
+      if (mid - from3 > 1)
+        mergeFromTo(compare2, fromOrdering, xs2, xs1, from3, mid);
+      if (to - mid > 1)
+        mergeFromTo(compare2, fromOrdering, xs2, xs1, mid, to);
+      i = from3;
+      j = mid;
+      k = from3;
+      while (i < mid && j < to) {
+        x = xs2[i];
+        y = xs2[j];
+        c = fromOrdering(compare2(x)(y));
+        if (c > 0) {
+          xs1[k++] = y;
+          ++j;
+        } else {
+          xs1[k++] = x;
+          ++i;
+        }
+      }
+      while (i < mid) {
+        xs1[k++] = xs2[i++];
+      }
+      while (j < to) {
+        xs1[k++] = xs2[j++];
+      }
+    }
+    return function(compare2) {
+      return function(fromOrdering) {
+        return function(xs) {
+          var out;
+          if (xs.length < 2)
+            return xs;
+          out = xs.slice(0);
+          mergeFromTo(compare2, fromOrdering, out, xs.slice(0), 0, xs.length);
+          return out;
+        };
+      };
+    };
+  }();
 
   // output/Control.Monad.ST.Internal/foreign.js
   var map_ = function(f) {
@@ -664,7 +941,7 @@
 
   // output/Data.Array.ST/foreign.js
   var sortByImpl2 = function() {
-    function mergeFromTo(compare2, fromOrdering, xs1, xs2, from2, to) {
+    function mergeFromTo(compare2, fromOrdering, xs1, xs2, from3, to) {
       var mid;
       var i;
       var j;
@@ -672,14 +949,14 @@
       var x;
       var y;
       var c;
-      mid = from2 + (to - from2 >> 1);
-      if (mid - from2 > 1)
-        mergeFromTo(compare2, fromOrdering, xs2, xs1, from2, mid);
+      mid = from3 + (to - from3 >> 1);
+      if (mid - from3 > 1)
+        mergeFromTo(compare2, fromOrdering, xs2, xs1, from3, mid);
       if (to - mid > 1)
         mergeFromTo(compare2, fromOrdering, xs2, xs1, mid, to);
-      i = from2;
+      i = from3;
       j = mid;
-      k = from2;
+      k = from3;
       while (i < mid && j < to) {
         x = xs2[i];
         y = xs2[j];
@@ -712,29 +989,6 @@
       };
     };
   }();
-
-  // output/Data.Tuple/index.js
-  var Tuple = /* @__PURE__ */ function() {
-    function Tuple2(value0, value1) {
-      this.value0 = value0;
-      this.value1 = value1;
-    }
-    ;
-    Tuple2.create = function(value0) {
-      return function(value1) {
-        return new Tuple2(value0, value1);
-      };
-    };
-    return Tuple2;
-  }();
-  var fst = function(v) {
-    return v.value0;
-  };
-
-  // output/Unsafe.Coerce/foreign.js
-  var unsafeCoerce2 = function(x) {
-    return x;
-  };
 
   // output/Data.Traversable/foreign.js
   var traverseArrayImpl = function() {
@@ -802,78 +1056,6 @@
         return maybe(Nothing.value)(go)(index(xs)(i));
       };
     };
-  };
-
-  // output/Effect.Class/index.js
-  var monadEffectEffect = {
-    liftEffect: /* @__PURE__ */ identity(categoryFn),
-    Monad0: function() {
-      return monadEffect;
-    }
-  };
-  var liftEffect = function(dict) {
-    return dict.liftEffect;
-  };
-
-  // output/Control.Monad.Reader.Class/index.js
-  var ask = function(dict) {
-    return dict.ask;
-  };
-
-  // output/Specular.Internal.Effect/foreign.js
-  function emptyDelayed() {
-    return [];
-  }
-  function pushDelayed(effs) {
-    return function(eff) {
-      return function() {
-        effs.push(eff);
-      };
-    };
-  }
-  function unsafeFreezeDelayed(x) {
-    return function() {
-      return x;
-    };
-  }
-  function sequenceEffects(effects) {
-    return function sequenceEffects_eff() {
-      for (var i = 0; i < effects.length; i++) {
-        effects[i]();
-      }
-    };
-  }
-
-  // output/Control.Monad.Cleanup/index.js
-  var onCleanup = function(dict) {
-    return dict.onCleanup;
-  };
-
-  // output/Control.Monad.Replace/index.js
-  var Slot = /* @__PURE__ */ function() {
-    function Slot2(value0, value1, value2) {
-      this.value0 = value0;
-      this.value1 = value1;
-      this.value2 = value2;
-    }
-    ;
-    Slot2.create = function(value0) {
-      return function(value1) {
-        return function(value2) {
-          return new Slot2(value0, value1, value2);
-        };
-      };
-    };
-    return Slot2;
-  }();
-  var replaceSlot = function(v) {
-    return v.value0;
-  };
-  var newSlot = function(dict) {
-    return dict.newSlot;
-  };
-  var destroySlot = function(v) {
-    return v.value1;
   };
 
   // output/Foreign.Object/foreign.js
@@ -985,13 +1167,13 @@
       };
     };
   }
-  function removeAllBetweenImpl(from2) {
+  function removeAllBetweenImpl(from3) {
     return function(to) {
       return function() {
-        if (!from2.parentNode) {
+        if (!from3.parentNode) {
           return;
         }
-        var node = from2.nextSibling;
+        var node = from3.nextSibling;
         while (node && node !== to) {
           var next = node.nextSibling;
           node.parentNode.removeChild(node);
@@ -1055,6 +1237,15 @@
   var createDocumentFragment = createDocumentFragmentImpl;
   var appendChild = appendChildImpl;
   var addEventListener = addEventListenerImpl;
+
+  // output/Effect.Uncurried/foreign.js
+  var runEffectFn1 = function runEffectFn12(fn) {
+    return function(a) {
+      return function() {
+        return fn(a);
+      };
+    };
+  };
 
   // output/Effect.Unsafe/foreign.js
   var unsafePerformEffect = function(f) {
@@ -1588,7 +1779,7 @@
     var handler = function(v) {
       return unit;
     };
-    return function __do3() {
+    return function __do4() {
       addObserver(node, handler);
       var value2 = get_value(node);
       removeObserver(node, handler);
@@ -1598,7 +1789,7 @@
   var readDynamic = function(dictMonadEffect) {
     var liftEffect1 = liftEffect(dictMonadEffect);
     return function(v) {
-      return liftEffect1(function __do3() {
+      return liftEffect1(function __do4() {
         var mark = begin("readDynamic");
         var result = readNode(v)();
         end(mark);
@@ -1623,7 +1814,7 @@
   var functorDynamic = {
     map: function(f) {
       return function(v) {
-        return unsafePerformEffect(function __do3() {
+        return unsafePerformEffect(function __do4() {
           var n = map2(f, v);
           annotate(n, "map " + name2(v));
           return n;
@@ -1645,7 +1836,7 @@
   var newDynamic = function(dictMonadEffect) {
     var liftEffect1 = liftEffect(dictMonadEffect);
     return function(initial) {
-      return liftEffect1(function __do3() {
+      return liftEffect1(function __do4() {
         var $$var = newVar(initial);
         annotate(readVar($$var), "root Dynamic");
         var dynamic = readVar($$var);
@@ -1653,7 +1844,7 @@
           dynamic,
           read: readDynamic1(dynamic),
           set: function(x) {
-            return function __do4() {
+            return function __do5() {
               var name3 = get_name(readVar($$var));
               var mark = begin("set " + name3);
               setVar($$var, x);
@@ -1662,7 +1853,7 @@
             };
           },
           modify: function(f) {
-            return function __do4() {
+            return function __do5() {
               var name3 = get_name(readVar($$var));
               var mark = begin("modify " + name3);
               var x = valueExc(readVar($$var));
@@ -1674,6 +1865,9 @@
         };
       });
     };
+  };
+  var changed = function(v) {
+    return v;
   };
   var _subscribeNode = function(handler, node) {
     var h = function(value2) {
@@ -1709,13 +1903,16 @@
     return function(handler) {
       return function(v) {
         return discard23(subscribeNode1(handler)(v))(function() {
-          return liftEffect1(function __do3() {
+          return liftEffect1(function __do4() {
             var currentValue = valueExc(v);
             return liftEffect2(handler(currentValue))();
           });
         });
       };
     };
+  };
+  var _subscribeEvent = function(handler, v) {
+    return _subscribeNode(handler, v);
   };
 
   // output/Specular.Internal.RIO/foreign.js
@@ -1813,17 +2010,17 @@
   var measure = function(dictMonadEffect) {
     var Monad0 = dictMonadEffect.Monad0();
     var Bind1 = Monad0.Bind1();
-    var bind3 = bind(Bind1);
+    var bind4 = bind(Bind1);
     var liftEffect5 = liftEffect(dictMonadEffect);
     var discard12 = discard3(Bind1);
     var pure12 = pure(Monad0.Applicative0());
     if (enabled) {
       return function(name3) {
         return function(action) {
-          return bind3(liftEffect5(function() {
+          return bind4(liftEffect5(function() {
             return begin(name3);
           }))(function(mark) {
-            return bind3(action)(function(result) {
+            return bind4(action)(function(result) {
               return discard12(liftEffect5(function() {
                 return end(mark);
               }))(function() {
@@ -1868,7 +2065,7 @@
   var runBuilderWithUserEnv = function(userEnv) {
     return function(parent) {
       return function(v) {
-        return function __do3() {
+        return function __do4() {
           var actionsMutable = emptyDelayed();
           var env = {
             parent,
@@ -1921,7 +2118,7 @@
               return discard22(liftEffect3(appendChild(placeholderAfter)(env.parent)))(function() {
                 return bind1(liftEffect3($$new(mempty1)))(function(cleanupRef) {
                   var replace = function(inner) {
-                    return measure2("slot replace")(function __do3() {
+                    return measure2("slot replace")(function __do4() {
                       measure2("slot remove DOM")(removeAllBetween(placeholderBefore)(placeholderAfter))();
                       var fragment = createDocumentFragment();
                       var v = measure2("slot init")(runBuilderWithUserEnv(env.userEnv)(fragment)(inner))();
@@ -1930,7 +2127,7 @@
                       (function() {
                         if (m_parent instanceof Just) {
                           insertBefore(fragment)(placeholderAfter)(m_parent.value0)();
-                          return write(measure2("slot cleanup")(function __do4() {
+                          return write(measure2("slot cleanup")(function __do5() {
                             v.value1();
                             return write(mempty1)(cleanupRef)();
                           }))(cleanupRef)();
@@ -1945,13 +2142,13 @@
                       return v.value0;
                     });
                   };
-                  var destroy = function __do3() {
+                  var destroy = function __do4() {
                     removeAllBetween(placeholderBefore)(placeholderAfter)();
                     removeNode(placeholderBefore)();
                     removeNode(placeholderAfter)();
                     return join2(read(cleanupRef))();
                   };
-                  var append2 = function __do3() {
+                  var append3 = function __do4() {
                     var fragment = createDocumentFragment();
                     var v = runBuilderWithUserEnv(env.userEnv)(fragment)(newSlot($lazy_monadReplaceBuilder(0)))();
                     modify_(function(v1) {
@@ -1972,7 +2169,7 @@
                     return v.value0;
                   };
                   return discard22(onCleanup2(join2(read(cleanupRef))))(function() {
-                    return pure1(new Slot(replace, destroy, append2));
+                    return pure1(new Slot(replace, destroy, append3));
                   });
                 });
               });
@@ -1998,18 +2195,69 @@
   function _addClass(node, cls) {
     node.classList.add(...splitClasses(cls));
   }
+  function setProperty(node, property, value2) {
+    node[property] = value2;
+  }
+
+  // output/Specular.FRP.Replaceable/index.js
+  var withDynamic_ = function(dictMonadReplace) {
+    var newSlot3 = newSlot(dictMonadReplace);
+    return function(dictMonadFRP) {
+      var bind4 = bind(dictMonadFRP.MonadCleanup1().Monad0().Bind1());
+      var subscribeDyn_3 = subscribeDyn_(dictMonadFRP);
+      return function(dyn) {
+        return function(widget) {
+          return bind4(newSlot3)(function(slot) {
+            return subscribeDyn_3(function(x) {
+              return replaceSlot(slot)(widget(x));
+            })(dyn);
+          });
+        };
+      };
+    };
+  };
+
+  // output/Specular.Dom.Widgets.Input/foreign.js
+  function getTextInputValue(node) {
+    return function() {
+      return node.value;
+    };
+  }
 
   // output/Specular.Dom.Element/index.js
   var measure3 = /* @__PURE__ */ measure(monadEffectEffect);
   var mempty2 = /* @__PURE__ */ mempty(monoidArray);
   var bind12 = /* @__PURE__ */ bind(bindBuilder);
   var subscribeDyn_2 = /* @__PURE__ */ subscribeDyn_(/* @__PURE__ */ monadFRP(monadEffectBuilder)(monadCleanupBuilder));
+  var readDynamic2 = /* @__PURE__ */ readDynamic(monadEffectEffect);
+  var unsafeEventTarget = function(e) {
+    return e.target;
+  };
+  var withTargetValue = function(cb) {
+    return function(event) {
+      return function __do4() {
+        var value2 = getTextInputValue(unsafeEventTarget(event))();
+        return cb(value2)();
+      };
+    };
+  };
   var text2 = function(str) {
     return mkBuilder$prime(function(env) {
       var node = createTextNode(str)();
       return appendChild(node)(env.parent)();
     });
   };
+  var semigroupProp = {
+    append: function(v) {
+      return function(v1) {
+        return function(node, cleanups) {
+          v(node, cleanups);
+          return v1(node, cleanups);
+        };
+      };
+    }
+  };
+  var append1 = /* @__PURE__ */ append(semigroupProp);
   var on = function(eventType) {
     return function(cb) {
       return function(node, _cleanups) {
@@ -2081,6 +2329,27 @@
       return attrs(singleton2(name3)(value2));
     };
   };
+  var _subscribeDyn = function(cleanups, dyn, handler) {
+    var unsub = _subscribeEvent(runEffectFn1(handler), changed(dyn));
+    pushDelayed(cleanups)(unsub)();
+    var initialValue = readDynamic2(dyn)();
+    return handler(initialValue);
+  };
+  var propertyD = function(property) {
+    return function(dyn) {
+      return function(node, cleanups) {
+        return _subscribeDyn(cleanups, dyn, function(v) {
+          return setProperty(node, property, v);
+        });
+      };
+    };
+  };
+  var valueD = /* @__PURE__ */ propertyD("value");
+  var bindValueOnChange = function(v) {
+    return append1(valueD(v.value0))(on("change")(withTargetValue(function($80) {
+      return v.value1($$const($80));
+    })));
+  };
 
   // output/Specular.Dom.Widget/foreign.js
   function documentBody() {
@@ -2110,11 +2379,12 @@
     };
   };
   var runMainWidgetInBody = function(widget) {
-    return function __do3() {
+    return function __do4() {
       var body = documentBody();
       return runMainWidgetInNode(body)(widget)();
     };
   };
+  var emptyWidget = /* @__PURE__ */ pure(applicativeBuilder)(unit);
 
   // output/Specular.Ref/index.js
   var Ref = /* @__PURE__ */ function() {
@@ -2152,6 +2422,24 @@
       };
     };
   };
+  var write4 = function(dictMonadEffect) {
+    var modify1 = modify4(dictMonadEffect);
+    return function(r) {
+      var $113 = modify1(r);
+      return function($114) {
+        return $113(function(new_4) {
+          return function(_old) {
+            return new_4;
+          };
+        }($114));
+      };
+    };
+  };
+
+  // output/Tasks.Booker/index.js
+  var component = /* @__PURE__ */ el_("div")(/* @__PURE__ */ discard(discardUnit)(bindBuilder)(/* @__PURE__ */ el_("div")(/* @__PURE__ */ el("input")([/* @__PURE__ */ attr("type")("text")])(emptyWidget)))(function() {
+    return el_("div")(el("input")([attr("type")("text")])(emptyWidget));
+  }));
 
   // output/Tasks.Counter/index.js
   var map4 = /* @__PURE__ */ map(functorDynamic);
@@ -2184,34 +2472,189 @@
   var mkCounters = function(dictMonadEffect) {
     return $$new2(dictMonadEffect);
   };
-  var component = /* @__PURE__ */ runMainWidgetInBody(/* @__PURE__ */ bind(bindBuilder)(/* @__PURE__ */ mkCounters(monadEffectBuilder)(/* @__PURE__ */ replicate(3)(0)))(function(counters) {
+  var component2 = /* @__PURE__ */ bind(bindBuilder)(/* @__PURE__ */ mkCounters(monadEffectBuilder)(/* @__PURE__ */ replicate(3)(0)))(function(counters) {
     var subtractCb = function(i) {
       return modifyCounters(counters)(i)(add3(-1 | 0));
     };
     var addCb = function(i) {
       return modifyCounters(counters)(i)(add3(1));
     };
-    return discard6(el_("div")(discard6(el("button")([class_("btn"), attr("type")("button"), onClick_(addCb(0))])(text2("+")))(function() {
+    return discard6(el_("div")(discard6(el("button")([class_("btn"), attr("type")("button"), onClick_(subtractCb(0))])(text2("-")))(function() {
       return discard6(dynText(map4(show2)(readCounters(counters)(0))))(function() {
-        return el("button")([class_("btn"), attr("type")("button"), onClick_(subtractCb(0))])(text2("-"));
+        return el("button")([class_("btn"), attr("type")("button"), onClick_(addCb(0))])(text2("+"));
       });
     })))(function() {
-      return discard6(el_("div")(discard6(el("button")([class_("btn"), attr("type")("button"), onClick_(addCb(1))])(text2("+")))(function() {
+      return discard6(el_("div")(discard6(el("button")([class_("btn"), attr("type")("button"), onClick_(subtractCb(1))])(text2("-")))(function() {
         return discard6(dynText(map4(show2)(readCounters(counters)(1))))(function() {
-          return el("button")([class_("btn"), attr("type")("button"), onClick_(subtractCb(1))])(text2("-"));
+          return el("button")([class_("btn"), attr("type")("button"), onClick_(addCb(1))])(text2("+"));
         });
       })))(function() {
-        return el_("div")(discard6(el("button")([class_("btn"), attr("type")("button"), onClick_(addCb(2))])(text2("+")))(function() {
+        return el_("div")(discard6(el("button")([class_("btn"), attr("type")("button"), onClick_(subtractCb(2))])(text2("-")))(function() {
           return discard6(dynText(map4(show2)(readCounters(counters)(2))))(function() {
-            return el("button")([class_("btn"), attr("type")("button"), onClick_(subtractCb(2))])(text2("-"));
+            return el("button")([class_("btn"), attr("type")("button"), onClick_(addCb(2))])(text2("+"));
           });
         }));
       });
     });
-  }));
+  });
+
+  // output/Tasks.Temperature/index.js
+  var bind3 = /* @__PURE__ */ bind(bindBuilder);
+  var $$new3 = /* @__PURE__ */ $$new2(monadEffectBuilder);
+  var discard7 = /* @__PURE__ */ discard(discardUnit)(bindBuilder);
+  var component3 = /* @__PURE__ */ bind3(/* @__PURE__ */ $$new3("0.0"))(function(v) {
+    return bind3($$new3("32.0"))(function(v1) {
+      return el_("div")(discard7(el_("div")(discard7(el("input")([attr("type")("text"), bindValueOnChange(v)])(emptyWidget))(function() {
+        return el_("span")(text2(" Celsius"));
+      })))(function() {
+        return el_("div")(discard7(el("input")([attr("type")("text"), bindValueOnChange(v1)])(emptyWidget))(function() {
+          return el_("span")(text2(" Fahrenheit"));
+        }));
+      }));
+    });
+  });
 
   // output/Main/index.js
-  var main = component;
+  var genericShowConstructor2 = /* @__PURE__ */ genericShowConstructor(genericShowArgsNoArguments);
+  var write5 = /* @__PURE__ */ write4(monadEffectEffect);
+  var for_2 = /* @__PURE__ */ for_(applicativeBuilder)(foldableArray);
+  var discard8 = /* @__PURE__ */ discard(discardUnit)(bindBuilder);
+  var withDynamic_2 = /* @__PURE__ */ withDynamic_(monadReplaceBuilder)(/* @__PURE__ */ monadFRP(monadEffectBuilder)(monadCleanupBuilder));
+  var Index = /* @__PURE__ */ function() {
+    function Index2() {
+    }
+    ;
+    Index2.value = new Index2();
+    return Index2;
+  }();
+  var Counter = /* @__PURE__ */ function() {
+    function Counter2() {
+    }
+    ;
+    Counter2.value = new Counter2();
+    return Counter2;
+  }();
+  var Temperature = /* @__PURE__ */ function() {
+    function Temperature2() {
+    }
+    ;
+    Temperature2.value = new Temperature2();
+    return Temperature2;
+  }();
+  var Booker = /* @__PURE__ */ function() {
+    function Booker2() {
+    }
+    ;
+    Booker2.value = new Booker2();
+    return Booker2;
+  }();
+  var genericPageState_ = {
+    to: function(x) {
+      if (x instanceof Inl) {
+        return Index.value;
+      }
+      ;
+      if (x instanceof Inr && x.value0 instanceof Inl) {
+        return Counter.value;
+      }
+      ;
+      if (x instanceof Inr && (x.value0 instanceof Inr && x.value0.value0 instanceof Inl)) {
+        return Temperature.value;
+      }
+      ;
+      if (x instanceof Inr && (x.value0 instanceof Inr && x.value0.value0 instanceof Inr)) {
+        return Booker.value;
+      }
+      ;
+      throw new Error("Failed pattern match at Main (line 20, column 1 - line 20, column 36): " + [x.constructor.name]);
+    },
+    from: function(x) {
+      if (x instanceof Index) {
+        return new Inl(NoArguments.value);
+      }
+      ;
+      if (x instanceof Counter) {
+        return new Inr(new Inl(NoArguments.value));
+      }
+      ;
+      if (x instanceof Temperature) {
+        return new Inr(new Inr(new Inl(NoArguments.value)));
+      }
+      ;
+      if (x instanceof Booker) {
+        return new Inr(new Inr(new Inr(NoArguments.value)));
+      }
+      ;
+      throw new Error("Failed pattern match at Main (line 20, column 1 - line 20, column 36): " + [x.constructor.name]);
+    }
+  };
+  var showPageState = {
+    show: /* @__PURE__ */ genericShow(genericPageState_)(/* @__PURE__ */ genericShowSum(/* @__PURE__ */ genericShowConstructor2({
+      reflectSymbol: function() {
+        return "Index";
+      }
+    }))(/* @__PURE__ */ genericShowSum(/* @__PURE__ */ genericShowConstructor2({
+      reflectSymbol: function() {
+        return "Counter";
+      }
+    }))(/* @__PURE__ */ genericShowSum(/* @__PURE__ */ genericShowConstructor2({
+      reflectSymbol: function() {
+        return "Temperature";
+      }
+    }))(/* @__PURE__ */ genericShowConstructor2({
+      reflectSymbol: function() {
+        return "Booker";
+      }
+    })))))
+  };
+  var show3 = /* @__PURE__ */ show(showPageState);
+  var renderLinks = function(state2) {
+    var changeState = function(newState) {
+      return write5(state2)(newState);
+    };
+    var renderLink = function(newState) {
+      return el("a")([attr("href")("#"), onClick_(changeState(newState))])(text2(show3(newState)));
+    };
+    return el("div")([attr("style")("display: flex; justify-content: space-around;")])(for_2([Index.value, Counter.value, Temperature.value, Booker.value])(renderLink));
+  };
+  var renderComponent = function(s) {
+    var render = function(state2) {
+      return function(c) {
+        return discard8(el_("strong")(text2(show3(state2))))(function() {
+          return discard8(el_("div")(c))(function() {
+            return el_("br")(emptyWidget);
+          });
+        });
+      };
+    };
+    return withDynamic_2(value(s))(function(state2) {
+      if (state2 instanceof Index) {
+        return emptyWidget;
+      }
+      ;
+      if (state2 instanceof Counter) {
+        return render(state2)(component2);
+      }
+      ;
+      if (state2 instanceof Temperature) {
+        return render(state2)(component3);
+      }
+      ;
+      if (state2 instanceof Booker) {
+        return render(state2)(component);
+      }
+      ;
+      throw new Error("Failed pattern match at Main (line 35, column 3 - line 39, column 44): " + [state2.constructor.name]);
+    });
+  };
+  var main = function __do3() {
+    var pageState = $$new2(monadEffectEffect)(Index.value)();
+    return runMainWidgetInBody(discard8(renderLinks(pageState))(function() {
+      return discard8(el_("br")(emptyWidget))(function() {
+        return renderComponent(pageState);
+      });
+    }))();
+  };
 
   // <stdin>
   main();
