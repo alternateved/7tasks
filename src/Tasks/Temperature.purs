@@ -2,6 +2,9 @@ module Tasks.Temperature where
 
 import Prelude
 
+import Data.Functor.Invariant (imap)
+import Data.Maybe (Maybe(..))
+import Data.Number (fromString)
 import Specular.Dom.Element (attr, bindValueOnChange, el, el_, text)
 import Specular.Dom.Widget (Widget, emptyWidget)
 import Specular.Ref (Ref)
@@ -40,11 +43,8 @@ defaultWith fallback = case _ of
 
 component :: Widget Unit
 component = do
-  runMainWidgetInBody do
     celsius <- Ref.new $ Celsius 0.0
     let fahrenheit = imap to' from' celsius
-    celsius :: Ref String <- Ref.new "0.0"
-    fahrenheit :: Ref String <- Ref.new "32.0"
 
     el_ "div" do
       el_ "strong" $ text "Temperature Converter"

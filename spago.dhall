@@ -4,7 +4,9 @@
   , "console"
   , "effect"
   , "foldable-traversable"
+  , "invariant"
   , "maybe"
+  , "numbers"
   , "prelude"
   , "specular"
   ]

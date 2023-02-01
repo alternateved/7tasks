@@ -1,4 +1,3 @@
-
 # Created by https://www.toptal.com/developers/gitignore/api/linux,macos,purescript,direnv,emacs,visualstudiocode
 # Edit at https://www.toptal.com/developers/gitignore?templates=linux,macos,purescript,direnv,emacs,visualstudiocode
 
@@ -141,3 +140,6 @@ output
 *.code-workspace
 
 # End of https://www.toptal.com/developers/gitignore/api/linux,macos,purescript,direnv,emacs,visualstudiocode
+
+# PureScript LSP
+.psc-ide-port
